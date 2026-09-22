@@ -44,7 +44,7 @@ def parse_arguments():
                     help="Path to the output file")
     
     parser.add_argument("--format", 
-                    default=".csv",
+                    default="csv",
                     help="Output format: 'csv' or 'json'; default is csv")
 
     parser.add_argument("--verbose", 
