@@ -1,4 +1,5 @@
 from pathlib import Path
+from pipeline import setup_logging
 import logging
 import pandas as pd
 import json
@@ -8,19 +9,22 @@ logger = logging.getLogger(__name__)
 
 def load_csv(filepath):
     """Load a CSV file into a DataFrame."""
+    setup_logging(filepath)
     df = pd.read_csv(filepath)
     logger.info(f"Loaded CSV file: {filepath} ({len(df.head())} rows)")
-    print(df)
+    return df
 
 def load_json(filepath):
     """Load a JSON file into a Python object (dict or list)."""
+    setup_logging(filepath)
     with open(filepath, "r") as f:
         data = json.load(f)
     logger.info(f"Loaded JSON file: {filepath}")
-    print(data)
+    return data
 
 def load_yaml(filepath):
     """Load a YAML file into a Python object."""
+    setup_logging(filepath)
     with open(filepath, "r") as f:
         config = yaml.safe_load(f)
     logger.info(f"Loaded YAML file: {filepath}")
@@ -39,7 +43,7 @@ def load_data(filepath):
         logger.error(f"Unsupported file format: {path.suffix}") 
 
 def main():
-    load_data("sample.json")
+    load_data("sample.csv")
 
 if __name__ == "__main__":
     main()
