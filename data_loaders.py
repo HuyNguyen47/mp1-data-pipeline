@@ -1,5 +1,4 @@
 from pathlib import Path
-from pipeline import setup_logging
 import logging
 import pandas as pd
 import json
@@ -9,14 +8,12 @@ logger = logging.getLogger(__name__)
 
 def load_csv(filepath):
     """Load a CSV file into a DataFrame."""
-    setup_logging(filepath)
     df = pd.read_csv(filepath)
     logger.info(f"Loaded CSV file: {filepath} ({len(df.head())} rows)")
     return df
 
 def load_json(filepath):
     """Load a JSON file into a Python object (dict or list)."""
-    setup_logging(filepath)
     with open(filepath, "r") as f:
         data = json.load(f)
     logger.info(f"Loaded JSON file: {filepath}")
@@ -24,7 +21,6 @@ def load_json(filepath):
 
 def load_yaml(filepath):
     """Load a YAML file into a Python object."""
-    setup_logging(filepath)
     with open(filepath, "r") as f:
         config = yaml.safe_load(f)
     logger.info(f"Loaded YAML file: {filepath}")
@@ -32,18 +28,14 @@ def load_yaml(filepath):
 
 def load_data(filepath):
     """Load a file based on its extension."""
-    path = Path('fixtures') / filepath
+    #path = Path('fixtures') / filepath
+    path = Path(filepath)
     if path.suffix == ".csv":
         load_csv(path)
     elif path.suffix == ".json":
         load_json(path)
     elif path.suffix == ".yaml":
         load_yaml(path)
-    if not path.is_file():
-        logger.error(f"Unsupported file format: {path.suffix}") 
-
-def main():
-    load_data("sample.csv")
-
-if __name__ == "__main__":
-    main()
+    else:
+        logging.error(f"Unsupported file format: {path.suffix}")
+        raise ValueError
