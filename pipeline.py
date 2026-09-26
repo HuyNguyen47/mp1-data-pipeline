@@ -13,8 +13,10 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+from data_loaders import load_data
 
 logger = logging.getLogger(__name__)
+
 
 def setup_logging(verbose=False):
     """Configure logging for the pipeline."""
@@ -27,7 +29,6 @@ def setup_logging(verbose=False):
         logger.setLevel(logging.DEBUG) 
     elif verbose is False:
         logger.setLevel(logging.INFO)
-    
 
 def parse_arguments():
     """Parse command-line arguments."""
@@ -59,16 +60,20 @@ def validate_input(filepath):
         logger.error(f"Input file not found: '{filepath.input}'")  
         sys.exit(1)
         return False
-    logger.debug(f"Arguments parsed: input={filepath.input}, output={filepath.output}")
-    logger.info(f"Input file validated: '{filepath.input}'")
     return True
+
 
 def main():
     """Main pipeline function."""
     args = parse_arguments()
     setup_logging(args.verbose)
-    validate_input(args)
-
+    logger.debug(f"Arguments parsed: input={args.input}, output={args.output}")
+    logger.info(f"Input file validated: '{args.input}'")
+    try:
+        data = load_data(args.input)
+    except ValueError:
+        sys.exit(1)
+    
 
 if __name__ == "__main__":
     main()
