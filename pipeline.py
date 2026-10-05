@@ -76,7 +76,7 @@ def main():
         sys.exit(1)
     try:
         data = load_data(args.input)
-        data_config = load_data(args.input)
+        data_config = load_data(args.config)
     except ValueError:
         sys.exit(1)
     data_original = data.copy()
