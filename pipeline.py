@@ -30,6 +30,7 @@ def setup_logging(verbose=False):
     elif verbose is False:
         logger.setLevel(logging.INFO)
 
+
 def parse_arguments():
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(description="Parsing command-line arguments")
@@ -38,6 +39,7 @@ def parse_arguments():
                     "-i",
                     required=True, 
                     help="Path to the input file")
+    
     parser.add_argument(
                     "--config",
                     required=True,
@@ -60,6 +62,7 @@ def validate_input(filepath):
         logger.error(f"Input file not found: '{filepath}'")  
         return False
     logger.info(f"Input file validated: '{filepath}'")
+    logger.debug(f"Arguments parsed: input={filepath}, output={filepath}")
     return True
 
 
@@ -67,7 +70,6 @@ def main():
     """Main pipeline function."""
     args = parse_arguments()
     setup_logging(args.verbose)
-    logger.debug(f"Arguments parsed: input={args.input}, output={args.output}")
 
     if not validate_input(args.input):
         sys.exit(1)
@@ -82,11 +84,20 @@ def main():
         sys.exit(1)
     
     data_original = data.copy()
+
     try:
-        process_data(data_config, config="missing")
+        cleaned_data = process_data(data, data_config)
     except ValueError:
+        
         sys.exit(1)
+    data_new = cleaned_data.copy()
+    cleaned_data.to_csv(args.output, index=False)
+    logger.info(f"Processing complete: {len(data_original)} -> {len(data_new)}")
+    logger.info(f"Saved cleaned data to {args.output}")
+    print(create_cleaning_report(data_original, data_new))
     
 
 if __name__ == "__main__":
+
     main()
+
