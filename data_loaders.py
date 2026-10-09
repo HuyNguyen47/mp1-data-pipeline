@@ -11,6 +11,7 @@ def load_csv(filepath):
     df = pd.read_csv(filepath)
     logger.info(f"Loaded CSV file: {filepath} ({len(df.head())} rows)")
     return df
+    
 
 def load_json(filepath):
     """Load a JSON file into a Python object (dict or list)."""
@@ -31,11 +32,13 @@ def load_data(filepath):
     #path = Path('fixtures') / filepath
     path = Path(filepath)
     if path.suffix == ".csv":
-        load_csv(path)
+        return load_csv(path)
     elif path.suffix == ".json":
-        load_json(path)
+        return load_json(path)
     elif path.suffix == ".yaml":
-        load_yaml(path)
+        return load_yaml(path)
     else:
         logging.error(f"Unsupported file format: {path.suffix}")
         raise ValueError
+
+

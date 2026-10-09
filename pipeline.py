@@ -18,7 +18,6 @@ from data_processor import process_data, create_cleaning_report
 
 logger = logging.getLogger(__name__)
 
-
 def setup_logging(verbose=False):
     """Configure logging for the pipeline."""
     logging.basicConfig(
@@ -31,6 +30,7 @@ def setup_logging(verbose=False):
     elif verbose is False:
         logger.setLevel(logging.INFO)
 
+
 def parse_arguments():
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(description="Parsing command-line arguments")
@@ -41,14 +41,14 @@ def parse_arguments():
                     help="Path to the input file")
     parser.add_argument(
                     "--config",
-                    required=True,
+                    required=True, 
                     help="Path to a YAML configuration file")
 
     parser.add_argument("--output", 
                     "-o",
                     required=True,
                     help="Path to the output file")
-    
+
     parser.add_argument("--verbose", 
                     "-v", 
                     action="store_true",
@@ -79,13 +79,21 @@ def main():
         data_config = load_data(args.config)
     except ValueError:
         sys.exit(1)
+    
     data_original = data.copy()
 
-    try: 
-        process_data(data_config, config="missing")
+    try:
+        cleaned_data = process_data(data, data_config)
     except ValueError:
+        
         sys.exit(1)
+    data_new = cleaned_data.copy()
+    cleaned_data.to_csv(args.output, index=False)
+    logger.info(f"Processing complete: {len(data_original)} -> {len(data_new)}")
+    logger.info(f"Saved cleaned data to {args.output}")
+    print(create_cleaning_report(data_original, data_new))
     
 
 if __name__ == "__main__":
+
     main()
