@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 def load_csv(filepath):
     """Load a CSV file into a DataFrame."""
     df = pd.read_csv(filepath)
-    logger.info(f"Loaded CSV file: {filepath} ({len(df.head())} rows)")
+    logger.info(f"Loaded CSV file: {filepath} ({len(df)} rows)")
     return df
     
 
@@ -29,7 +29,6 @@ def load_yaml(filepath):
 
 def load_data(filepath):
     """Load a file based on its extension."""
-    #path = Path('fixtures') / filepath
     path = Path(filepath)
     if path.suffix == ".csv":
         return load_csv(path)
